@@ -53,10 +53,20 @@ namespace ANT_Mini_Mart.HumanResource
         {
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = conn;
-            cmd.CommandText = $"INSERT INTO Customer(Name, Gender, Phone, Email, Address, RegisterDate, IsActive) VALUES(N'{txtName.Text.Trim()}', N'{cboGender.Text}', '{txtPhone.Text.Trim()}', '{txtEmail.Text.Trim()}', N'{txtAddress.Text.Trim()}', '{dtpRegisterDate.Value.ToShortDateString()}', { Convert.ToInt32( chkActive.Checked) })";
+            cmd.CommandText = $"INSERT INTO Customer(Name, Gender, Phone, Email, Address, RegisterDate, IsActive) VALUES(@name, N'{cboGender.Text}', '{txtPhone.Text.Trim()}', '{txtEmail.Text.Trim()}', N'{txtAddress.Text.Trim()}', @dob, { Convert.ToInt32( chkActive.Checked) })";
 
             try
             {
+                /*
+                SqlParameter sp_name = new SqlParameter();
+                sp_name.ParameterName = "@name";
+                sp_name.SqlDbType = SqlDbType.NVarChar;
+                sp_name.Size = 255;
+                sp_name.Value = txtName.Text.Trim();
+                cmd.Parameters.Add(sp_name);
+                */
+                cmd.Parameters.AddWithValue("@name", txtName.Text.Trim());
+                cmd.Parameters.AddWithValue("@dob", dtpRegisterDate.Value);
                 int affected_row = cmd.ExecuteNonQuery();
                 MessageBox.Show($"{affected_row} row is inserted.");
                 
@@ -99,9 +109,8 @@ namespace ANT_Mini_Mart.HumanResource
                         bool isActive = Convert.ToBoolean(customer["IsActive"]);
                         dataGridView1.Rows.Add(id, name, gender, phone, email, address, register_date, isActive);
                     }
-                    customer.Close();
                 }
-                
+                customer.Close();
             }
             catch (Exception ex)
             {
@@ -201,6 +210,40 @@ namespace ANT_Mini_Mart.HumanResource
         private void FormCustomer_FormClosed(object sender, FormClosedEventArgs e)
         {
             conn.Close();
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            dataGridView1.Rows.Clear();
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = conn;
+            cmd.CommandText = $"SELECT * FROM Customer WHERE ID = {txtSearch.Text.Trim()} OR Name LIKE '%{txtSearch.Text.Trim()}%';";
+            try
+            {
+                SqlDataReader customer = cmd.ExecuteReader();
+                if (customer.HasRows == true)
+                {
+                    while (customer.Read() == true)
+                    {
+                        //int id = customer[0];
+                        int id = Convert.ToInt32(customer["ID"]);
+                        string name = customer["Name"].ToString();
+                        string gender = customer["Gender"].ToString();
+                        string phone = customer["Phone"].ToString();
+                        string email = customer["Email"].ToString();
+                        string address = customer["Address"].ToString();
+                        DateTime register_date = Convert.ToDateTime(customer["RegisterDate"]);
+                        bool isActive = Convert.ToBoolean(customer["IsActive"]);
+                        dataGridView1.Rows.Add(id, name, gender, phone, email, address, register_date, isActive);
+                    }
+                    
+                }
+                customer.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
