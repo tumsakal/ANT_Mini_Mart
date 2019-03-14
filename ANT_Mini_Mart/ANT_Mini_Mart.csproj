@@ -50,11 +50,18 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helper.cs" />
     <Compile Include="HumanResource\FormCustomer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="HumanResource\FormCustomer.Designer.cs">
       <DependentUpon>FormCustomer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HumanResource\FormNew.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HumanResource\FormNew.designer.cs">
+      <DependentUpon>FormNew.cs</DependentUpon>
     </Compile>
     <Compile Include="HumanResource\FormStaff.cs">
       <SubType>Form</SubType>
@@ -66,6 +73,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="HumanResource\FormCustomer.resx">
       <DependentUpon>FormCustomer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HumanResource\FormNew.resx">
+      <DependentUpon>FormNew.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HumanResource\FormStaff.resx">
       <DependentUpon>FormStaff.cs</DependentUpon>

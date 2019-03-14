@@ -18,6 +18,7 @@ namespace ANT_Mini_Mart.HumanResource
         }
         void LoadData()
         {
+            dataGridView1.Rows.Clear();
             //string sql = @"SELECT S.ID, NID,
             //B.[Name] AS BranchName,
             //P.[Name] AS PositionName,
@@ -67,6 +68,53 @@ namespace ANT_Mini_Mart.HumanResource
 
         private void FormStaff_Load(object sender, EventArgs e)
         {
+            this.LoadData();
+        }
+
+        private void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if(e.Button == MouseButtons.Right && e.RowIndex >= 0)
+            {
+                string id = dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString();
+                contextMenuStrip1.Tag = id;
+                contextMenuStrip1.Show(Cursor.Position);
+            }
+        }
+
+        private void dELETEToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string id = contextMenuStrip1.Tag.ToString();
+            string sql = $"DELETE FROM Staff WHERE ID = '{id}'";//ID : varchar
+            SqlTransaction tran = Program.Connection.BeginTransaction();
+            SqlCommand cmd = new SqlCommand(sql, Program.Connection);
+            cmd.Transaction = tran;
+            try
+            {
+                cmd.ExecuteNonQuery();
+                //tran.Commit();
+                tran.Rollback();
+                tran.Dispose();
+                this.LoadData();
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnNew_Click(object sender, EventArgs e)
+        {
+            FormNew fm = new FormNew();
+            fm.Tag = "INSERT";
+            this.Hide();
+            fm.ShowDialog();
+            this.Show();
             this.LoadData();
         }
     }
